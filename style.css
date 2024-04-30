@@ -24,7 +24,7 @@ section {
 }
 
 header {
-  width: 520px;
+  width: 560px;
   height: 120px;
   background-color: pink;
   border-radius: 20px 20px 0 0;
@@ -32,7 +32,7 @@ header {
 }
 
 section div {
-  width: 520px;
+  width: 560px;
   height: 420px;
   background-color: white;
   border-radius: 0 0 20px 20px;
