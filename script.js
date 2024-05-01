@@ -17,7 +17,7 @@ const ctx = canvas.getContext("2d")
 var tilesX = 17
 var tilesY = 12
 var tiles = []
-var nBombs = 10
+var nBombs = 0
 
 class Tile {
   constructor(i, j) {
@@ -27,6 +27,7 @@ class Tile {
     this.isOpen = false
     this.isFlagad = false
     this.bombsAround = 0
+    this.openAround = false
   }
 }
 
@@ -34,13 +35,16 @@ function generateTiles() {
   for (let i = 0; i < tilesX; i++) {
     for (let j = 0; j < tilesY; j++) {
       let tile = new Tile(i, j)
-      tile.isBomb = Math.floor(Math.random() * 5) == 0
+
+      tile.isBomb = Math.floor(Math.random() * 7) == 0
+      if (tile.isBomb) {
+        nBombs += 1
+      }
+
       tiles.push(tile)
     }
   }
 }
-
-generateTiles()
 
 function generateNBombs() {
   tiles.map((t) => {
@@ -52,7 +56,7 @@ function generateNBombs() {
 function calculeteNBombsAround(tile) {
   let bombCounter = 0
   for (let i = tile.i - 1; i <= tile.i + 1; i++) {
-    for (let j = tile.j - 1; j < tile.j + 1; j++) {
+    for (let j = tile.j - 1; j <= tile.j + 1; j++) {
       if (i != tile.i || j != tile.j) {
         if (tiles.find((t) => t.i == i && t.j == j)?.isBomb) bombCounter += 1
       }
@@ -60,7 +64,6 @@ function calculeteNBombsAround(tile) {
   }
   return bombCounter
 }
-generateNBombs()
 
 function draw() {
   tiles.map((t) => {
@@ -68,6 +71,31 @@ function draw() {
   })
 }
 
+function openTile(tile) {
+  if (!tile.isFlagad) {
+    tile.isOpen = true
+  }
+  if (!tile.openAround && tile.bombsAround == 0 && !tile.isBomb) openAround(tile)
+}
+
+function openAround(tile) {
+  tile.openAround = true
+  for (let i = tile.i - 1; i <= tile.i + 1; i++) {
+    for (let j = tile.j - 1; j <= tile.j + 1; j++) {
+      if (i != tile.i || j != tile.j) {
+        const currentTile = tiles.find((t) => t.i == i && t.j == j)
+        if (currentTile && !currentTile?.isBomb) {
+          openTile(currentTile)
+          console.log(currentTile)
+          draw()
+        }
+      }
+    }
+  }
+}
+
+generateTiles()
+generateNBombs()
 draw()
 
 function darwTile(tile) {
@@ -79,7 +107,11 @@ function darwTile(tile) {
       ctx.fillStyle = "#ff0000"
       ctx.fillRect(x, y, 30, 30)
     } else {
-      ctx.fillStyle = "#999900"
+      if ((tile.i + tile.j) % 2 == 0) {
+        ctx.fillStyle = "#999999"
+      } else {
+        ctx.fillStyle = "#888888"
+      }
       ctx.fillRect(x, y, 30, 30)
 
       if (tile.bombsAround) {
@@ -90,7 +122,14 @@ function darwTile(tile) {
       }
     }
   } else {
-    ctx.fillStyle = "#999999"
+    if (tile.isFlagad) {
+      ctx.fillStyle = "#0000ff"
+    } else if ((tile.i + tile.j) % 2 == 0) {
+      ctx.fillStyle = "#2fbf04"
+    } else {
+      // ctx.fillStyle = "#20a000"
+      ctx.fillStyle = "#28ac00"
+    }
     ctx.fillRect(x, y, 30, 30)
   }
 }
@@ -104,6 +143,24 @@ document.addEventListener("click", function (e) {
   const j = Math.floor((mouseY / 371) * 12)
 
   let tile = tiles.find((t) => t.i == i && t.j == j)
-  tile.isOpen = true
+  if (!tile.isFlagad) {
+    tile.isOpen = true
+  }
+  draw()
+  openTile(tile)
+})
+
+document.addEventListener("contextmenu", function (e) {
+  e.preventDefault()
+
+  const rect = canvas.getBoundingClientRect()
+  const mouseX = e.clientX - rect.left
+  const mouseY = e.clientY - rect.top
+
+  const i = Math.floor((mouseX / 526) * 17)
+  const j = Math.floor((mouseY / 371) * 12)
+
+  let tile = tiles.find((t) => t.i == i && t.j == j)
+  tile.isFlagad = !tile.isFlagad
   draw()
 })
