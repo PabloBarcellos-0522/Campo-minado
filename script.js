@@ -16,8 +16,8 @@ const ctx = canvas.getContext("2d")
 
 var tilesX = 17
 var tilesY = 12
-
 var tiles = []
+var nBombs = 10
 
 class Tile {
   constructor(i, j) {
@@ -34,6 +34,7 @@ function generateTiles() {
   for (let i = 0; i < tilesX; i++) {
     for (let j = 0; j < tilesY; j++) {
       let tile = new Tile(i, j)
+      tile.isBomb = Math.floor(Math.random() * 5) == 0
       tiles.push(tile)
     }
   }
@@ -41,20 +42,58 @@ function generateTiles() {
 
 generateTiles()
 
+function generateNBombs() {
+  tiles.map((t) => {
+    const nBombs = calculeteNBombsAround(t)
+    t.bombsAround = nBombs
+  })
+}
+
+function calculeteNBombsAround(tile) {
+  let bombCounter = 0
+  for (let i = tile.i - 1; i <= tile.i + 1; i++) {
+    for (let j = tile.j - 1; j < tile.j + 1; j++) {
+      if (i != tile.i || j != tile.j) {
+        if (tiles.find((t) => t.i == i && t.j == j)?.isBomb) bombCounter += 1
+      }
+    }
+  }
+  return bombCounter
+}
+generateNBombs()
+
 function draw() {
   tiles.map((t) => {
-    if (t.isOpen) {
-      ctx.fillStyle = "#2bff00"
-    } else {
-      ctx.fillStyle = "#ff0000"
-    }
-    let x = t.i * 31 + 1
-    let y = t.j * 31 + 1
-    ctx.fillRect(x, y, 30, 30)
+    darwTile(t)
   })
 }
 
 draw()
+
+function darwTile(tile) {
+  let x = tile.i * 31 + 1
+  let y = tile.j * 31 + 1
+
+  if (tile.isOpen) {
+    if (tile.isBomb) {
+      ctx.fillStyle = "#ff0000"
+      ctx.fillRect(x, y, 30, 30)
+    } else {
+      ctx.fillStyle = "#999900"
+      ctx.fillRect(x, y, 30, 30)
+
+      if (tile.bombsAround) {
+        ctx.font = "25px Arial"
+        ctx.textAlign = "center"
+        ctx.fillStyle = "black"
+        ctx.fillText(tile.bombsAround, x + 15, y + 25)
+      }
+    }
+  } else {
+    ctx.fillStyle = "#999999"
+    ctx.fillRect(x, y, 30, 30)
+  }
+}
 
 document.addEventListener("click", function (e) {
   const rect = canvas.getBoundingClientRect()
@@ -66,6 +105,5 @@ document.addEventListener("click", function (e) {
 
   let tile = tiles.find((t) => t.i == i && t.j == j)
   tile.isOpen = true
-
   draw()
 })
