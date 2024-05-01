@@ -18,6 +18,8 @@ var tilesX = 17
 var tilesY = 12
 var tiles = []
 var nBombs = 0
+let flag = new Image()
+flag.src = "./resources/Flag.png"
 
 class Tile {
   constructor(i, j) {
@@ -122,15 +124,16 @@ function darwTile(tile) {
       }
     }
   } else {
-    if (tile.isFlagad) {
-      ctx.fillStyle = "#0000ff"
-    } else if ((tile.i + tile.j) % 2 == 0) {
+    if ((tile.i + tile.j) % 2 == 0) {
       ctx.fillStyle = "#2fbf04"
     } else {
-      // ctx.fillStyle = "#20a000"
       ctx.fillStyle = "#28ac00"
     }
     ctx.fillRect(x, y, 30, 30)
+  }
+
+  if (tile.isFlagad && !tile.isOpen) {
+    ctx.drawImage(flag, x, y, 30, 30)
   }
 }
 
@@ -162,5 +165,7 @@ document.addEventListener("contextmenu", function (e) {
 
   let tile = tiles.find((t) => t.i == i && t.j == j)
   tile.isFlagad = !tile.isFlagad
+  let x = tile.i * 31 + 1
+  let y = tile.j * 31 + 1
   draw()
 })
