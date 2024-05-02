@@ -11,6 +11,10 @@ main {
   backdrop-filter: blur(500px);
 }
 
+h1 {
+  font-size: xx-large;
+}
+
 section {
   display: flex;
   flex-direction: column;
@@ -26,15 +30,24 @@ section {
 header {
   width: 560px;
   height: 120px;
-  background-color: pink;
+  background-color: #02a20d;
   border-radius: 20px 20px 0 0;
   box-shadow: 20px 19px 3px 1px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-content: center;
+  flex-wrap: wrap;
+  justify-content: space-around;
 }
 
-section div {
+header div {
+  display: flex;
+  align-items: center;
+}
+
+#box {
   width: 560px;
   height: 420px;
-  background-color: white;
+  background-color: #d5ffcf;
   border-radius: 0 0 20px 20px;
   box-shadow: 20px 20px 3px 1px rgba(0, 0, 0, 0.2);
 
@@ -42,6 +55,16 @@ section div {
   justify-content: center;
   align-content: center;
   flex-wrap: wrap;
+}
+
+select {
+  width: 100px;
+  height: 35px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  font-size: x-large;
 }
 
 /* #container {

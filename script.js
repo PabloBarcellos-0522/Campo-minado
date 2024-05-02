@@ -14,6 +14,8 @@ const ctx = canvas.getContext("2d")
 // ctx.fillStyle = "#ff0000"
 // ctx.fillRect(0, 0, 510, 360)
 
+var difficulty = document.getElementById("difficulty")
+var difficultyN = difficulty.value
 var tilesX = 17
 var tilesY = 12
 var tiles = []
@@ -88,7 +90,6 @@ function openAround(tile) {
         const currentTile = tiles.find((t) => t.i == i && t.j == j)
         if (currentTile && !currentTile?.isBomb) {
           openTile(currentTile)
-          console.log(currentTile)
           draw()
         }
       }
@@ -138,6 +139,35 @@ function darwTile(tile) {
 }
 
 document.addEventListener("click", function (e) {
+  if (difficulty.value != difficultyN) {
+    difficultyN = difficulty.value
+    if (difficulty.value == "Medio") {
+      ctx.clearRect(0, 0, 1000, 1000)
+      tilesX = 17
+      tilesY = 12
+      tiles = []
+      generateTiles()
+      generateNBombs()
+      draw()
+    } else if (difficulty.value == "Facil") {
+      ctx.clearRect(0, 0, 1000, 1000)
+      tilesX = 10
+      tilesY = 10
+      tiles = []
+      generateTiles()
+      generateNBombs()
+      draw()
+    } else {
+      ctx.clearRect(0, 0, 1000, 1000)
+      tilesX = 35
+      tilesY = 35
+      tiles = []
+      generateTiles()
+      generateNBombs()
+      draw()
+    }
+    draw()
+  }
   const rect = canvas.getBoundingClientRect()
   const mouseX = e.clientX - rect.left
   const mouseY = e.clientY - rect.top
@@ -149,6 +179,7 @@ document.addEventListener("click", function (e) {
   if (!tile.isFlagad) {
     tile.isOpen = true
   }
+
   draw()
   openTile(tile)
 })

@@ -9,8 +9,26 @@
   <body>
     <main>
       <section>
-        <header></header>
-        <div><canvas id="game" width="526px" height="371px"></canvas></div>
+        <header>
+          <div>
+            <select name="difficulty" id="difficulty">
+              <option value="Medio">Médio</option>
+              <option value="Facil">Fácil</option>
+              <option value="Difícil">Difícil</option>
+            </select>
+          </div>
+
+          <div>
+            <img width="40px" height="40px" src="./resources/Flag.png" alt="Flag" />
+            <h1>40</h1>
+          </div>
+
+          <div>
+            <img width="40px" height="40px" src="./resources/alarm-clock-icon.png" alt="Clock" />
+            <h1>000</h1>
+          </div>
+        </header>
+        <div id="box"><canvas id="game" width="526px" height="371px"></canvas></div>
       </section>
     </main>
     <div id="container">
