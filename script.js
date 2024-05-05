@@ -248,7 +248,7 @@ document.addEventListener("click", function (e) {
     j = Math.floor((mouseY / 371) * 12)
   } else if (difficulty.value == "Facil") {
     i = Math.floor((mouseX / 519) * 13) // 39
-    j = Math.floor((mouseY / 371) * 9)
+    j = Math.floor((mouseY / 361) * 9)
   } else {
     i = Math.floor((mouseX / 526) * 25) // 20
     j = Math.floor((mouseY / 356) * 17)
@@ -391,6 +391,7 @@ setInterval(() => {
 
   if (victory == tiles.length && win) {
     win = false
+    clearInterval(cron)
 
     setTimeout(() => {
       document.getElementById("result2").classList.remove("hidden")
@@ -423,7 +424,6 @@ document.getElementById("finish2").addEventListener("click", function () {
   setTimeout(() => {
     document.getElementById("seconds").innerHTML = "000"
     document.getElementById("Flags").innerHTML = quant()
-    clearInterval(cron)
     draw()
     win = true
   }, 500)

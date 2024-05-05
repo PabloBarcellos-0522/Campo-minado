@@ -111,3 +111,37 @@ div button {
   width: 0px;
   height: 0px;
 }
+
+#made_by {
+  width: 360px;
+  height: 70px;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  margin: 25px;
+  color: black;
+  font-size: x-small;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  line-height: 15px;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+  font: 900 30px "Roboto";
+  transition: 2s;
+  margin: 0;
+}
+
+a:hover {
+  color: blue;
+  transition: 0.3s;
+}
+
+@media (max-width: 1000px) {
+  #made_by {
+    display: none;
+  }
+}
