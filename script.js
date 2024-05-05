@@ -3,16 +3,10 @@ document.addEventListener("mousemove", function (e) {
 
   mouse.style.left = e.pageX - 350 + "px"
   mouse.style.top = e.pageY - 350 + "px"
-
-  //   mouse.style.left = e.pageX - 27 + "px"
-  //   mouse.style.top = e.pageY - 25 + "px"
 })
 
 const canvas = document.getElementById("game")
 const ctx = canvas.getContext("2d")
-
-// ctx.fillStyle = "#ff0000"
-// ctx.fillRect(0, 0, 510, 360)
 
 var difficulty = document.getElementById("difficulty")
 var difficultyN = difficulty.value
@@ -20,6 +14,7 @@ var cron
 var tilesX = 17
 var tilesY = 12
 var size = 30
+var win = true
 
 var i
 var j
@@ -47,31 +42,15 @@ function generateTiles() {
     for (let j = 0; j < tilesY; j++) {
       let tile = new Tile(i, j)
 
-      // tile.isBomb = Math.floor(Math.random() * 7) == 0
-      // if (tile.isBomb) {
-      // nBombs += 1
-      // }
-
       tiles.push(tile)
     }
   }
 }
 
-function verificar() {
-  let QQD = 0
-
-  for (let i = 0; i < tiles.length; i++) {
-    if (tiles[i].isBomb) {
-      QQD += 1
-    }
-  }
-  return QQD
-}
-
 function generateBombs() {
   for (let i = 0; i < qBombs; i++) {
     let random = Math.floor(Math.random() * tiles.filter((t) => !t.isBomb).length)
-    // tiles.filter((t) => !t.isBomb)[random].isBomb = true
+
     if (!tiles[random].isBomb) {
       tiles[random].isBomb = true
     } else {
@@ -108,8 +87,37 @@ function draw() {
 function openTile(tile) {
   if (!tile.isFlagad) {
     tile.isOpen = true
+    if (tile.isBomb && tile.isOpen) {
+      for (let i = 0; i < tiles.length; i++) {
+        if (tiles[i].isBomb && !tiles[i].isFlagad) {
+          tiles[i].isOpen = true
+        }
+
+        if (tiles[i].isFlagad && !tiles[i].isBomb) {
+          setTimeout(() => {
+            tiles[i].isFlagad = false
+            draw()
+          }, 500)
+        }
+      }
+      draw()
+      setTimeout(() => {
+        document.getElementById("result").classList.remove("hidden")
+      }, 1000)
+      clearInterval(cron)
+    }
   }
   if (!tile.openAround && tile.bombsAround == 0 && !tile.isBomb) openAround(tile)
+}
+
+function roundRect(ctx, x, y, largura, altura, raio) {
+  ctx.beginPath()
+  ctx.moveTo(x + raio, y)
+  ctx.arcTo(x + largura, y, x + largura, y + altura, raio)
+  ctx.arcTo(x + largura, y + altura, x, y + altura, raio)
+  ctx.arcTo(x, y + altura, x, y, raio)
+  ctx.arcTo(x, y, x + largura, y, raio)
+  ctx.closePath()
 }
 
 function openAround(tile) {
@@ -160,6 +168,7 @@ function darwTile(tile) {
   if (tile.isOpen) {
     if (tile.isBomb) {
       ctx.fillStyle = "#ff0000"
+
       ctx.fillRect(x, y, size, size)
     } else {
       if ((tile.i + tile.j) % 2 == 0) {
@@ -250,7 +259,6 @@ document.addEventListener("click", function (e) {
   let first = function () {
     for (let i = 0; i < tiles.length; i++) {
       if (tiles[i].isOpen) {
-        console.log(tiles[i])
         return false
       }
     }
@@ -258,7 +266,7 @@ document.addEventListener("click", function (e) {
       return true
     }
   }
-  console.log(first())
+
   if (first()) {
     cron = setInterval(() => {
       time()
@@ -319,6 +327,7 @@ function quant() {
     }
   }
   console.log(QQQ)
+  return QQQ
 }
 
 function time() {
@@ -335,4 +344,98 @@ function time() {
     now = "0" + now
   }
   document.getElementById("seconds").innerHTML = now
+}
+
+finish_menu = document.getElementById("finish")
+
+finish_menu.addEventListener("click", function () {
+  document.getElementById("result").classList.add("hidden")
+  difficultyN = difficulty.value
+  clearInterval(cron)
+  i = null
+  j = null
+  tiles = []
+  nBombs = 0
+
+  if (difficulty.value == "Medio") {
+    qBombs = 30
+  } else if (difficulty.value == "Facil") {
+    qBombs = 10
+  } else {
+    qBombs = 50
+  }
+
+  setTimeout(() => {
+    generateTiles()
+    generateBombs()
+    generateNBombs()
+  }, 10)
+  setTimeout(() => {
+    document.getElementById("seconds").innerHTML = "000"
+    document.getElementById("Flags").innerHTML = quant()
+    clearInterval(cron)
+    draw()
+  }, 500)
+})
+
+setInterval(() => {
+  let victory = 0
+
+  for (let i = 0; i < tiles.length; i++) {
+    if (tiles[i].isOpen && !tiles[i].isBomb) {
+      victory += 1
+    } else if (tiles[i].isBomb && tiles[i].isFlagad && !tiles[i].isOpen) {
+      victory += 1
+    }
+  }
+
+  if (victory == tiles.length && win) {
+    win = false
+
+    setTimeout(() => {
+      document.getElementById("result2").classList.remove("hidden")
+    }, 1000)
+  }
+}, 500)
+
+document.getElementById("finish2").addEventListener("click", function () {
+  document.getElementById("result2").classList.add("hidden")
+  difficultyN = difficulty.value
+  clearInterval(cron)
+  i = null
+  j = null
+  tiles = []
+  nBombs = 0
+
+  if (difficulty.value == "Medio") {
+    qBombs = 30
+  } else if (difficulty.value == "Facil") {
+    qBombs = 10
+  } else {
+    qBombs = 50
+  }
+
+  setTimeout(() => {
+    generateTiles()
+    generateBombs()
+    generateNBombs()
+  }, 10)
+  setTimeout(() => {
+    document.getElementById("seconds").innerHTML = "000"
+    document.getElementById("Flags").innerHTML = quant()
+    clearInterval(cron)
+    draw()
+    win = true
+  }, 500)
+})
+
+function hack() {
+  for (let i = 0; i < tiles.length; i++) {
+    if (!tiles[i].isBomb) {
+      tiles[i].isOpen = true
+    } else if (tiles[i].isBomb) {
+      tiles[i].isFlagad = true
+    }
+  }
+  draw()
 }

@@ -55,6 +55,7 @@ header div {
   justify-content: center;
   align-content: center;
   flex-wrap: wrap;
+  position: relative;
 }
 
 select {
@@ -67,18 +68,6 @@ select {
   font-size: x-large;
 }
 
-/* #container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  bottom: 0;
-  left: 0;
-  position: fixed;
-  right: 0;
-  top: 0;
-} */
-
 #mouse {
   width: 700px;
   height: 700px;
@@ -86,4 +75,39 @@ select {
   background-color: rgb(0, 179, 255);
   position: relative;
   z-index: -1;
+}
+
+.Result {
+  width: 300px;
+  height: 200px;
+  position: absolute;
+  background-color: white;
+  border-radius: 50px;
+  bottom: 110px;
+  font-size: xxx-large;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  opacity: 0.8;
+}
+
+div button {
+  background-color: blue;
+  color: white;
+  border-radius: 20px;
+  width: 270px;
+  height: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: xx-large;
+}
+
+.hidden {
+  /* opacity: 0; */
+  display: none;
+  width: 0px;
+  height: 0px;
 }
